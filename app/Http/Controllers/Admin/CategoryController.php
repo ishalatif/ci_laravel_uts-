@@ -7,6 +7,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use RealRashid\SweetAlert\Facades\Alert;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CategoryExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CategoryController extends Controller
 {
@@ -17,13 +20,23 @@ class CategoryController extends Controller
         $this->module = 'Category';
         $this->middleware([
             'role:author|admin',
-            'permission:index admin/categories|create admin/categories/create|store admin/categories/store|edit admin/categories/edit|update admin/categories/update|delete admin/categories/delete|show admin/categories/show'
+            'permission:index admin/categories|create admin/categories/create|store admin/categories/store|edit admin/categories/edit|update admin/categories/update|delete admin/categories/delete|export admin/categories/export'
         ]);
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
+    {
+        $data = [
+            'page_title' => $this->module,
+            'categories' => Category::all(),
+        ];
+
+        return view('backend.category.index', $data);
+    }
+
+    public function show()
     {
         $data = [
             'page_title' => $this->module,
@@ -94,6 +107,22 @@ class CategoryController extends Controller
 
         Alert::success('Success', $this->module . ' updated successfully.');
         return redirect()->route('categories.index');
+    }
+
+    public function excelExport() 
+    {
+        return Excel::download(new CategoryExport, 'category.xlsx');
+    }
+
+    public function pdfExport() {
+        $data = [
+            'page_title' => $this->module,
+            'categories' => Category::all(),
+        ];
+
+
+        $pdf = Pdf::loadView('backend.category.pdf', $data);
+        return $pdf->stream('categories.pdf');
     }
 
     /**

@@ -17,7 +17,7 @@
                         @foreach ($post_archive as $postArchive)
                             <div class="col-lg-6">
                                 <div class="card border-0 bg-light rounded-4">
-                                    @if ($postArchive->featured_image && Storage::exists('public/images/posts/' . $postArchive->featured_image))
+                                    @if ($postArchive->featured_image && Storage::exists('images/posts/' . $postArchive->featured_image))
                                         <img src="{{ asset('storage/images/posts/' . $postArchive->featured_image) }}"
                                             class="card-img-top">
                                     @else

@@ -36,7 +36,7 @@ class ProfileController extends Controller
             'page_title' => 'Profil',
         ];
 
-        return view('profile.show', $data);
+        return view('profile.edit', $data);
     }
 
     /**

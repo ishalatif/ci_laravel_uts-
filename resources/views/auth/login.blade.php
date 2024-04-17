@@ -51,6 +51,9 @@
                 <p class="mb-1">
                     <a href="{{ url('forgot-password') }}">Forgot password</a>
                 </p>
+                <p class="mb-1">
+                    <a href="{{ route('register') }}">Create account</a>
+                </p>
             </div>
             <!-- /.card-body -->
         </div>

@@ -1,36 +1,115 @@
 <?php
 
 namespace App\Http\Controllers\Author;
+use App\Models\User;
 
+use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Laravolt\Indonesia\Models\City;
 use App\Http\Controllers\Controller;
-use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use Laravolt\Indonesia\Models\Village;
+use Illuminate\Support\Facades\Storage;
+use Laravolt\Indonesia\Models\District;
+use Laravolt\Indonesia\Models\Province;
+use Illuminate\Support\Facades\Redirect;
+use RealRashid\SweetAlert\Facades\Alert;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Category;
-use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
-    private $categories, $postsByMonthYear;
+    protected $module;
 
     public function __construct()
     {
-        $this->categories = Category::all();
-        $this->postsByMonthYear = Post::select(DB::raw('MONTH(published_at) as month, YEAR(published_at) as year'))
-            ->groupBy('month', 'year')
-            ->orderBy('year', 'desc')
-            ->orderBy('month', 'desc')
-            ->get();
+        $this->module = 'Profile';
     }
 
-    public function index()
+    /**
+     * Display the user's profile form.
+     */
+    public function show(): View
     {
+
         $data = [
-            'page_title'    => 'My Post',
-            'categories'    => $this->categories,
-            'recent_posts'  => Post::paginate(3),
-            'latest_posts'  => Post::paginate(6),
-            'monthly_post_archive' => $this->postsByMonthYear,
+            'page_title' => 'Profil',
+            'categories'    => Category::all(),
         ];
 
-        return view('frontend.posts.index', $data);
+        return view('user-profile.edit', $data);
+    }
+
+    /**
+     * Display the user's profile form.
+     */
+    public function edit(User $user)
+    {
+        $user = auth()->user();
+
+        $data = [
+            'page_title'=> 'Profile Saya',
+            'users'     => $user,
+            'provinces' => Province::orderBy('name')->get(),
+            'cities'    => City::where('province_code', $user->province_id)->orderBy('name')->get(),
+            'districts' => District::where('city_code', $user->city_id)->orderBy('name')->get(),
+            'villages'  => Village::where('district_code', $user->district_id)->orderBy('name')->get(),
+            'categories'    => Category::all(),
+        ];
+
+        return view('frontend.author.profile.index', $data);
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function update(ProfileUpdateRequest $request, User $user)
+    {
+        $user   = auth()->user();
+        $data   = $request->validated();
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('profile_image')) {
+            // Menghapus file lama jika ada
+            if ($user->profile_image) {
+                Storage::disk('public')->delete('images/users/' . $user->profile_image);
+            }
+
+            $profile_image = $request->file('profile_image');
+            $profile_imageName = now()->format('YmdHis') . '_' . $profile_image->extension();
+            Storage::disk('public')->put('images/users/' . $profile_imageName, file_get_contents($profile_image));
+            $data['profile_image'] = $profile_imageName;
+        }
+
+        $user->update($data);
+
+        Alert::success('Success', $this->module . ' updated successfully.');
+        return redirect()->route('user-profile.edit', ['user_profile' => $user]);
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validateWithBag('userDeletion', [
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
     }
 }

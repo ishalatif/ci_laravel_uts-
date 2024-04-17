@@ -18,7 +18,7 @@
                             <div class="col">
                                 <div class="card border-0 bg-light-subtle rounded-3 shadow">
                                     <a href="{{ route('posts.show', ['slug' => $searchResult->slug]) }}">
-                                        @if ($searchResult->featured_image && Storage::exists('public/images/posts/' . $searchResult->featured_image))
+                                        @if ($searchResult->featured_image && Storage::exists('images/posts/' . $searchResult->featured_image))
                                             <img src="{{ asset('storage/images/posts/' . $searchResult->featured_image) }}"
                                                 class="card-img-top">
                                         @else

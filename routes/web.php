@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\PermissionController;
 
 use App\Http\Controllers\Author\PostController as AuthorPostController;
 use App\Http\Controllers\Author\DashboardController as AuthorDashboardController;
+use App\Http\Controllers\Author\ProfileController as AuthorProfileController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
@@ -35,7 +36,9 @@ Route::get('/posts/category/{category}', [PostController::class, 'category'])->n
 
 Route::middleware(['auth','role:admin'])->prefix('admin')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::resource('categories', CategoryController::class);
+    Route::resource('categories', CategoryController::class)->except('show');
+    Route::get('categories/export/excel', [CategoryController::class, 'excelExport'])->name('categories.excelExport');
+    Route::get('categories/export/pdf', [CategoryController::class, 'pdfExport'])->name('categories.pdfExport');
     Route::resource('tags', TagController::class);
     Route::resource('profile', ProfileController::class)->only(['edit', 'update']);
 
@@ -47,8 +50,8 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->group(function () {
     });
 });
 
-Route::middleware('auth')->prefix('author')->group(function () {
-    Route::get('dashboard', [AuthorDashboardController::class, 'index'])->name('author.dashboard');
+Route::middleware(['auth'])->prefix('author')->group(function () {
+    Route::get('dashboard', [AuthorDashboardController::class, 'index'])->name('dashboard');
     // Custom routes for author posts
     Route::get('posts', [AuthorPostController::class, 'index'])->name('author.posts');
     Route::get('posts/create', [AuthorPostController::class, 'create'])->name('author.posts.create');
@@ -58,9 +61,7 @@ Route::middleware('auth')->prefix('author')->group(function () {
     Route::patch('posts/{post}', [AuthorPostController::class, 'update'])->name('author.posts.update');
     Route::delete('posts/{post}', [AuthorPostController::class, 'destroy'])->name('author.posts.destroy');
 
-    Route::get('profile', [ProfileController::class, 'show'])->name('author.profile');
-    Route::get('profile/edit', [ProfileController::class, 'edit'])->name('author.profile.edit');
-    Route::patch('profile/update', [ProfileController::class, 'update'])->name('author.profile.update');
+    Route::resource('user-profile', AuthorProfileController::class)->only(['edit', 'update', 'delete']);
 });
 
 require __DIR__ . '/auth.php';

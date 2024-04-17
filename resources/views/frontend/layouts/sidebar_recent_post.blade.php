@@ -6,9 +6,9 @@
                 <div class="row g-0">
                     <div class="col-md-4">
                         <a href="{{ route('posts.show', ['slug' => $sidebarRecentPosts->slug]) }}">
-                            @if ($sidebarRecentPosts->featured_image && Storage::exists('public/images/posts/' . $sidebarRecentPosts->featured_image))
-                                <img src="{{ Storage::url('images/posts/' . $sidebarRecentPosts->featured_image) }}"
-                                    class="card-img-top">
+                            @if ($sidebarRecentPosts->featured_image && Storage::exists('images/posts/' . $sidebarRecentPosts->featured_image))
+                                <img src="{{ asset('storage/images/posts/' . $sidebarRecentPosts->featured_image) }}"
+                                    class="card-img-top jojojojo">
                             @else
                                 <img src="{{ asset('storage/images/general/noimage.jpg') }}" class="card-img-top">
                             @endif

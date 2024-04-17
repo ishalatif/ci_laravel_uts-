@@ -55,16 +55,19 @@ class UserRolePermissionSeeder extends Seeder
         // Create users
         $users = [
             [
-                'name'          => 'AmperaKoding',
-                'email'         => 'amperakoding@gmail.com',
-                'password'      => Hash::make('amperakoding@gmail.com'),
+                'id'            => 1,
+                'name'          => 'kevin',
+                'email'         => 'kevin.cahyo.2003@gmail.com',
+                'password'      => Hash::make('acfy0ver'),
                 'profile_image' => 'amperakoding.png',
                 'province_id'   => '16',
                 'city_id'       => '1671',
                 'district_id'   => rand(167101, 167118),
                 'village_id'    => rand(1671161001, 1671161003),
+                'created_by'    => 1,
             ],
             [
+                'id'            => 2,
                 'name'          => 'Muhazmi',
                 'email'         => 'muhazmi@gmail.com',
                 'password'      => Hash::make('muhazmi@gmail.com'),
@@ -73,6 +76,7 @@ class UserRolePermissionSeeder extends Seeder
                 'city_id'       => '1671',
                 'district_id'   => rand(167101, 167118),
                 'village_id'    => rand(1671161001, 1671161003),
+                'created_by'    => 2,
             ]
         ];
 

@@ -13,7 +13,7 @@ class ImageUploadController extends Controller
             // $file = $request->file('upload');
             // $fileName = now()->format('YmdHis') . '_.' . $file->extension();
             // Storage::disk('public')->put('images/posts/detail/' . $fileName, file_get_contents($file));
-            // $url = asset('public/images/posts/detail/' . $fileName);
+            // $url = asset('images/posts/detail/' . $fileName);
 
             $originName = $request->file('upload')->hashName();
             $fileName = pathinfo($originName, PATHINFO_FILENAME);

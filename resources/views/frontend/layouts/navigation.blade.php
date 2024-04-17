@@ -45,17 +45,17 @@
                     <div class="dropdown text-end">
                         <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            @if (Storage::exists('public/images/users/' . auth()->user()->profile_image))
+                            @if (Storage::exists('images/users/' . auth()->user()->profile_image))
                                 <img src="{{ Storage::url('images/users/' . auth()->user()->profile_image) }}"
                                     width="32" height="32">
                             @else
                                 <img src="{{ asset('storage/images/default-user.png') }}" class="rounded-circle">
                             @endif
                         </a>
-                        <ul class="dropdown-menu text-small" style="">
-                            <li><a class="dropdown-item" href="{{ route('author.dashboard') }}">Dashboard</a></li>
+                        <ul class="dropdown-menu text-small" >
+                            <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
                             <li><a class="dropdown-item" href="{{ route('author.posts') }}">My Posts</a></li>
-                            <li><a class="dropdown-item" href="{{ route('author.profile') }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ route('user-profile.edit', auth()->id()) }}">Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

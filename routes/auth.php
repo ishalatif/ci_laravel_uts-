@@ -28,6 +28,12 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // Tambahkan route untuk registrasi pengguna
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+    
+    Route::post('register', [RegisteredUserController::class, 'store']);
 });
 
 Route::middleware('auth')->group(function () {

@@ -7,7 +7,7 @@
         @endforeach
     @endif
 
-    <form action="{{ route('categories.update', $categories->id) }}" method="POST">
+    <form action="{{ route('categories.update', $category->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -15,7 +15,7 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $categories->name) }}">
+                    <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $category->name) }}">
                 </div>
             </div>
             <div class="card-footer">
